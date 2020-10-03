@@ -68,7 +68,7 @@ optional arguments:
 
 ** Requirements
    - Python 3.8 or above.
-      I've set the Poetry pyproject config to require Python 3.8 or above. I don't believe anything is preventing use with 3.7, but I am not opposed to throwing in a walrus here and there if it is the best way to do something.
+     - I've set the Poetry config to require Python 3.8 or above. I don't believe anything is preventing use with 3.7, but I am not opposed to throwing in a walrus here and there if it is the best way to do something.
    - Poetry, any modern version.
 
 ** Contributing
