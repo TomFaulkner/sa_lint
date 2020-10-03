@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "Salient: A simple SqlAlchemy Linter"
+name = "Salient"
 version = "0.1.0"
 description = "Salient: A simple SqlAlchemy Linter."
 authors = ["Tom Faulkner <faulkner@pm.me>"]

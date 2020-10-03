@@ -1,6 +1,6 @@
 import pytest
 
-from sa_lint.sa_lint import find_duplicate_definitions, DuplicateFinder
+from salient.salient import find_duplicate_definitions, DuplicateFinder
 
 data = """
 from sqlalchemy import Boolean, Column, Integer

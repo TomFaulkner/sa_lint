@@ -1,4 +1,4 @@
-from sa_lint import __version__
+from salient import __version__
 
 
 def test_version():
