@@ -10,6 +10,13 @@ from typing import Callable, List
 def do_config():
     parser = setup_arguments()
     values = vars(parser.parse_args())
+    values["linters"] = []
+    linters = (
+        ("redefined_column", lint_redefined_columns),
+        ("nullable_true", lint_unnecessary_nullable),
+        ("index_false", lint_unnecessary_index_false),
+    )
+    values["linters"] = [fn for name, fn in linters if values[name]]
     # TODO: add environment variables and config file
     return values
 
@@ -35,7 +42,6 @@ def setup_arguments():
         help="Check for columns that are redefined.",
     )
     parser.add_argument("--config", type=str, help="Load options from CONFIG FILE.")
-    parser.add_argument("--ext", default="py", help="Extensions to check")
     parser.add_argument("files", nargs="+", help="files to lint")
     parser.add_argument(
         "-R",
@@ -47,39 +53,31 @@ def setup_arguments():
     return parser
 
 
-class LintingError(Exception):
-    pass
-
-
-class RedefinedColumn(LintingError):
-    pass
-
-
-async def find_unnecessary_x_bool(contents, str_to_find: str, bool_to_find: str = 'False'):
+async def find_unnecessary_x_bool(
+    contents, str_to_find: str, bool_to_find: str = "False"
+):
     errors = []
     for line_no, line in enumerate(contents.splitlines()):
-        line_cleaned = line.replace(' ', '')
-        if f'{str_to_find}={bool_to_find}' in line_cleaned:
-            errors.append(('', [(line_no + 1, line)]))
+        line_cleaned = line.replace(" ", "")
+        if f"{str_to_find}={bool_to_find}" in line_cleaned:
+            errors.append(("", [(line_no + 1, line)]))
     return errors
 
 
 async def lint_unnecessary_index_false(contents):
-    results = await find_unnecessary_x_bool(contents, 'index')
+    results = await find_unnecessary_x_bool(contents, "index")
     if results:
-        output = await format_errors('Unnecessary index=False', results)
+        output = await format_errors("Unnecessary index=False", results)
         return False, output
-    return True, ''
+    return True, ""
 
 
 async def lint_unnecessary_nullable(contents):
-    results = await find_unnecessary_x_bool(contents, 'nullable', 'True')
+    results = await find_unnecessary_x_bool(contents, "nullable", "True")
     if results:
-        output = await format_errors('Unnecessary nullable=True', results)
+        output = await format_errors("Unnecessary nullable=True", results)
         return False, output
-    return True, ''
-
-    pass
+    return True, ""
 
 
 class DuplicateFinder:
@@ -113,28 +111,25 @@ async def find_duplicate_definitions(contents):
 
 
 async def format_errors(error_name, result_items):
-    output = ''
+    output = ""
     for result in result_items:
         key, values = result
         details = [f"{ln}: {dfn}" for ln, dfn in values]
         if key:
-            output += f'  {error_name} - {key}:'
+            output += f"  {error_name} - {key}:"
         else:
-            output += f'  {error_name}:'
+            output += f"  {error_name}:"
         for line in details:
-            output += '\n    ' + line
+            output += "\n    " + line
     return output
 
 
 async def lint_redefined_columns(contents):
     results = await find_duplicate_definitions(contents)
     if results:
-        output = await format_errors('Redefined Columns', list(results.items()))
+        output = await format_errors("Redefined Columns", list(results.items()))
         return False, output
-    return True, ''
-
-
-LINT_FUNCTIONS = [value for value in locals() if "lint_" in value]
+    return True, ""
 
 
 async def run_lint_on_file(name, contents, linters):
@@ -145,10 +140,10 @@ async def run_lint_on_file(name, contents, linters):
         pass_, output = await linter(contents)
         if not pass_:
             passing = False
-            file_output += f'\n{output}'
+            file_output += f"\n{output}"
 
     if passing:
-        return True, ''
+        return True, ""
     return False, file_output
 
 
@@ -158,8 +153,7 @@ async def read_file(fn):
         return f.read()
 
 
-async def get_files(files: str, extensions: str = "py"):
-    # TODO: file extensions
+async def get_files(files: str):
     lint_files = []
     for f in files:
         if Path(f).is_dir():
@@ -168,24 +162,26 @@ async def get_files(files: str, extensions: str = "py"):
     return lint_files
 
 
-async def main(files: list):
-    combined_output = ''
+async def main(files: list, linters: List[Callable]):
+    combined_output = ""
     failures = 0
 
-    linters = (lint_redefined_columns, lint_unnecessary_index_false, lint_unnecessary_nullable)
     for f in await get_files(files):
         pass_, output = await run_lint_on_file(f, await read_file(f), linters)
         if not pass_:
             failures += 1
-            combined_output += f'\n{output}'
+            combined_output += f"\n{output}"
 
     if failures:
-        print(f'{failures} errors were found.\n{combined_output}')
+        print(f"{failures} errors were found.\n{combined_output}")
         sys.exit(1)
     else:
-        print('Success')
+        print("Success")
 
 
 if __name__ == "__main__":
     config = do_config()
-    asyncio.run(main(config["files"]))
+    if not config["linters"]:
+        print("Nothing to run, please select one or more linters.")
+        sys.exit(5)
+    asyncio.run(main(config["files"], config["linters"]))
