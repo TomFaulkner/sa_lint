@@ -46,8 +46,9 @@ def setup_arguments():
     parser.add_argument(
         "-R",
         "--recursive",
+        action="store_true",
         default=False,
-        help="if FILES includes directories scan those as well",
+        help="If FILES includes directories scan those as well",
     )
     parser.add_argument("-1", "--stop-after-first-error", help="stop after first error")
     return parser

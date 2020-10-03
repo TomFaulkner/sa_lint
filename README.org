@@ -50,8 +50,7 @@ optional arguments:
   -r, --redefined-column
                         Check for columns that are redefined.
   --config CONFIG       Load options from CONFIG FILE.
-  -R RECURSIVE, --recursive RECURSIVE
-                        if FILES includes directories scan those as well
+  -R, --recursive       If FILES includes directories scan those as well
   -1 STOP_AFTER_FIRST_ERROR, --stop-after-first-error STOP_AFTER_FIRST_ERROR
                         stop after first error
 #+END_SRC
