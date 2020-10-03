@@ -13,7 +13,7 @@ class Integer:
 
 class RedefinedColumnsModel:
     __table_name__ = "redefined_columns_model"
-    duplicate = Column(Integer)
+    duplicate = Column(Integer, nullable=True, index=False)
     col_1 = Column()
     col_2 = Column()
     duplicate = Column(Boolean)
