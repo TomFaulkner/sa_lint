@@ -13,10 +13,10 @@ class Integer:
 
 class AllTheProblemsModel:
     __table_name__ = "all_the_problems"
-    duplicate = Column(Integer)
-    col_1 = Column(nullable=True)
-    col_2 = Column(index=False)
-    duplicate = Column(Boolean)
+    not_a_duplicate = Column(Integer)
+    col_1 = Column()
+    col_2 = Column()
+    original = Column(Boolean)
 
 
 false_positive = True
