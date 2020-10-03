@@ -1,6 +1,6 @@
 import pytest
 
-from sa_lint.sa_lint import lint_redefined_columns, DuplicateFinder
+from sa_lint.sa_lint import find_duplicate_definitions, DuplicateFinder
 
 data = """
 from sqlalchemy import Boolean, Column, Integer
@@ -18,8 +18,8 @@ false_positive = False
 
 
 @pytest.mark.asyncio
-async def test_lint_redefined_columns():
-    res = await lint_redefined_columns(data)
+async def test_find_duplicate_definitions():
+    res = await find_duplicate_definitions(data)
     assert len(res) == 1
     assert "duplicate" in res
     assert res["duplicate"][0] == (6, "Column(Integer)")
