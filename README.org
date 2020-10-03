@@ -1,0 +1,33 @@
+* Salient: A simple SQLAlchemy Linter
+** What is it?
+   Salient is a rather simple, naive, even simplistic, linter for SQLAlchemy class based models.
+   
+** Why?
+   I wrote this after discovering that a SA model in a project I work on had a table column that was defined once and then redefined with a different definition later in the model. I have also found that unnecessary ~nullable=True~ and ~index=False~ can be found all over the place.  I wrote this after discovering that a SA model in a project I work on had a table column that was defined once and then redefined with a different definition later in the model. I have also found that unnecessary ~nullable=True~ and ~index=False~ can be found all over the place. 
+** Simple and Naive
+   Salient takes few options and parses SA models in a naive manner. Salient does not currently use an AST or a finite state machine to parse source code. Rather it parses like you might with grep.
+*** The Good thing about being naive
+    Salient should be simple to understand and to maintain.
+*** The tradeoffs
+    Salient assumes a Python module contains one SA class based model, so if you have a module with multiple classes and they have column names in common you would need to separate them or not check for duplicate columns. This also means that if you have ~nullable=True~ in a module being linted outside of a column definition the linter is going to be most unhappy with you.
+** The Name
+   Salient comes from my abbreviating SQLAlchemy as SA and it being a linter, SAli(e)nt.
+** Usage
+   The idea, and hope, is that your SA models live in their own directory separate from other source code. Salient probably won't break if it sees other source, but it was really intended to mostly look at SA models.
+   
+~poetry run python salient.py -rni src/app/models/*.py~
+ 
+#+BEGIN_SRC shell
+1 file(s) with errors were found.
+
+examples/all_problems.py
+  Redefined Columns - duplicate:
+    16: Column(Integer)
+    19: Column(Boolean)
+  Unnecessary nullable=True:
+    17:     col_1 = Column(nullable=True)
+  Unnecessary index=False:
+    18:     col_2 = Column(index=False)
+#+END_SRC
+
+   You can always run with the ~-h~ or ~--help~ parameter for more options.
