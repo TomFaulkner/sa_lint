@@ -173,7 +173,7 @@ async def main(files: list, linters: List[Callable]):
             combined_output += f"\n{output}"
 
     if failures:
-        print(f"{failures} errors were found.\n{combined_output}")
+        print(f"{failures} file(s) with errors were found.\n{combined_output}")
         sys.exit(1)
     else:
         print("Success")
