@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "Salient"
-version = "0.1.0"
+version = "0.1.1"
 description = "Salient: A simple SqlAlchemy Linter."
 authors = ["Tom Faulkner <faulkner@pm.me>"]
+readme = "README.md"
+homepage = "https://github.com/TomFaulkner/sa_lint"
 
 [tool.poetry.dependencies]
 python = ">=3.8"

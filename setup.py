@@ -9,14 +9,22 @@ try:
 except ImportError:
     from distutils.core import setup
 
+import os.path
+
 readme = ''
+here = os.path.abspath(os.path.dirname(__file__))
+readme_path = os.path.join(here, 'README.rst')
+if os.path.exists(readme_path):
+    with open(readme_path, 'rb') as stream:
+        readme = stream.read().decode('utf8')
 
 setup(
     long_description=readme,
     name='Salient',
-    version='0.1.0',
+    version='0.1.1',
     description='Salient: A simple SqlAlchemy Linter.',
     python_requires='>=3.8',
+    project_urls={"homepage": "https://github.com/TomFaulkner/sa_lint"},
     author='Tom Faulkner',
     author_email='faulkner@pm.me',
     entry_points={"console_scripts": ["salient = salient.salient:cmd"]},
