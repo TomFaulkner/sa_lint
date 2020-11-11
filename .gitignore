@@ -186,3 +186,5 @@ flycheck_*.el
 # network security
 /network-security.data
 
+# dephell generated RST for PyPI
+README.rst
