@@ -180,9 +180,13 @@ async def main(files: list, linters: List[Callable]):
         print("Success")
 
 
-if __name__ == "__main__":
+def cmd():
     config = do_config()
     if not config["linters"]:
         print("Nothing to run, please select one or more linters.")
         sys.exit(5)
     asyncio.run(main(config["files"], config["linters"]))
+
+
+if __name__ == "__main__":
+    cmd()
